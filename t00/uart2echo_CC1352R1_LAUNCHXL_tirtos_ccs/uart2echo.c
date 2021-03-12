@@ -77,7 +77,6 @@ void *mainThread(void *arg0)
     GPIO_write(CONFIG_GPIO_LED_0, CONFIG_GPIO_LED_ON);
 
     UART2_write(uart, echoPrompt, sizeof(echoPrompt), &bytesWritten);
-//        bytesWritten = 0;
 
     /* Loop forever echoing */
     while (1) {
