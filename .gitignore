@@ -10,7 +10,7 @@ RemoteSystemsTempFiles/**/*
 dvt/**/*
 
 **/*/Debug/**/*
-**/*/Releaise/**/*
+**/*/Release/**/*
 **/*/.xdhelp
 **/*/.config/**/*
 **/*/.launches/**/*
