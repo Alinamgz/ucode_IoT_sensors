@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?ccsproject version="1.0"?>
+<projectOptions>
+	<ccsVersion value="10.2.0"/>
+	<deviceVariant value="Cortex M.CC1352R1F3"/>
+	<deviceFamily value="TMS470"/>
+	<deviceEndianness value="little"/>
+	<codegenToolVersion value="20.2.4.LTS"/>
+	<isElfFormat value="true"/>
+	<connection value="common/targetdb/connections/TIXDS110_Connection.xml"/>
+	<rts value=""/>
+	<createSlaveProjects value=""/>
+	<ignoreDefaultDeviceSettings value="true"/>
+	<ignoreDefaultCCSSettings value="true"/>
+	<templateProperties value="id=i2copt3001_CC1352R1_LAUNCHXL_tirtos_ccs.projectspec.i2copt3001_CC1352R1_LAUNCHXL_tirtos_ccs,buildProfile=release,isHybrid=true"/>
+	<origin value="/Volumes/Storage/shared/amazur/ccs/utils/sail_1_50_00_00/examples/rtos/CC1352R1_LAUNCHXL/sail/i2copt3001/tirtos/ccs/i2copt3001_CC1352R1_LAUNCHXL_tirtos_ccs.projectspec"/>
+	<filesToOpen value=""/>
+</projectOptions>

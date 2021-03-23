@@ -192,12 +192,13 @@ static void* displayTask(void *arg0) {
 	while (1) {
 		sem_wait(&displaySem);
 
+		Display_print3(display, 0, 0, "magno : x = %d, y = %d, z = %d",
+						magxyz.x, magxyz.y, magxyz.z);
 		Display_print3(display, 0, 0, "accelo: x = %d, y = %d, z = %d",
 						accelxyz.x, accelxyz.y, accelxyz.z);
-		Display_print3(display, 0, 0, "gyro  : x = %d, y = %d, z = %d",
+		Display_print3(display, 0, 0, "gyro  : x = %d, y = %d, z = %d\n",
 						gyroxyz.x, gyroxyz.y, gyroxyz.z);
-		Display_print3(display, 0, 0, "magno : x = %d, y = %d, z = %d\n",
-						magxyz.x, magxyz.y, magxyz.z);
+
 	}
 }
 
@@ -214,8 +215,8 @@ void* bmiInterruptHandlerTask(void *arg0) {
 		if (0 == sem_wait(&bmi160Sem)) {
             com_rslt += bmi160_read_fifo_header_data(BMI160_SEC_IF_BMM150, &header_data);
 
-            for(i=0;i<=header_data.accel_frame_count;i++) {
-                if(i == 0) {
+            for (i=0; i <= header_data.accel_frame_count; i++) {
+                if (i == 0) {
                     accelxyz.x =  header_data.accel_fifo[i].x;
                     accelxyz.y =  header_data.accel_fifo[i].y;
                     accelxyz.z =  header_data.accel_fifo[i].z;
@@ -227,29 +228,29 @@ void* bmiInterruptHandlerTask(void *arg0) {
                 }
             }
 
-            for(i=0;i<=header_data.gyro_frame_count;i++) {
-                if(i == 0) {
+            for (i=0; i <= header_data.gyro_frame_count; i++) {
+                if (i == 0) {
                     gyroxyz.x =  header_data.gyro_fifo[i].x;
                     gyroxyz.y =  header_data.gyro_fifo[i].y;
                     gyroxyz.z =  header_data.gyro_fifo[i].z;
                 }
                 else {
-                    gyroxyz.x = (gyroxyz.x + header_data.gyro_fifo[i].x)/2;
-                    gyroxyz.y = (gyroxyz.y + header_data.gyro_fifo[i].y)/2;
-                    gyroxyz.z = (gyroxyz.z + header_data.gyro_fifo[i].z)/2;
+                    gyroxyz.x = (gyroxyz.x + header_data.gyro_fifo[i].x) / 2;
+                    gyroxyz.y = (gyroxyz.y + header_data.gyro_fifo[i].y) / 2;
+                    gyroxyz.z = (gyroxyz.z + header_data.gyro_fifo[i].z) / 2;
                 }
             }
 
-            for(i=0;i<=header_data.mag_frame_count;i++) {
-                if(i == 0) {
+            for (i=0; i<=header_data.mag_frame_count; i++) {
+                if (i == 0) {
                     magxyz.x =  header_data.mag_fifo[i].x;
                     magxyz.y =  header_data.mag_fifo[i].y;
                     magxyz.z =  header_data.mag_fifo[i].z;
                 }
                 else {
-                    magxyz.x = (magxyz.x + header_data.mag_fifo[i].x)/2;
-                    magxyz.y = (magxyz.y + header_data.mag_fifo[i].y)/2;
-                    magxyz.z = (magxyz.z + header_data.mag_fifo[i].z)/2;
+                    magxyz.x = (magxyz.x + header_data.mag_fifo[i].x) / 2;
+                    magxyz.y = (magxyz.y + header_data.mag_fifo[i].y) / 2;
+                    magxyz.z = (magxyz.z + header_data.mag_fifo[i].z) / 2;
                 }
             }
 
@@ -286,7 +287,7 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(I2C_Handle i2cHndl) {
 	* the semaphore is normally posted by bmi160 interrupt(watermark)
 	* The interrupt handler task waits on this semaphore.
 	*/
-	if(0 != sem_init(&bmi160Sem,0,0)) {
+	if(0 != sem_init(&bmi160Sem, 0, 0)) {
 		/* sem_init() failed */
 		Display_print0(display, 0, 0, "bmi160sem Semaphore creation failed");
 		while (1);
@@ -421,19 +422,16 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_config_running_mode(u8 v_running_mode_u8) {
             com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
             s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* set gyro data rate as 100Hz*/
-            com_rslt += bmi160_set_gyro_output_data_rate(
-            BMI160_GYRO_OUTPUT_DATA_RATE_200HZ);
+            com_rslt += bmi160_set_gyro_output_data_rate(BMI160_GYRO_OUTPUT_DATA_RATE_200HZ);
             s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* set accel data rate as 100Hz*/
-            com_rslt += bmi160_set_accel_output_data_rate(
-            BMI160_ACCEL_OUTPUT_DATA_RATE_200HZ, BMI160_ACCEL_OSR4_AVG1);
+            com_rslt += bmi160_set_accel_output_data_rate(BMI160_ACCEL_OUTPUT_DATA_RATE_200HZ, BMI160_ACCEL_OSR4_AVG1);
             s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /***** read FIFO data based on interrupt*****/
             s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* Enable the FIFO mag*/
             com_rslt += bmi160_set_fifo_mag_enable(FIFO_MAG_ENABLE);
-            s_bmi160.delay_msec(
-            BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
+            s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* Enable the FIFO accel*/
             com_rslt += bmi160_set_fifo_accel_enable(FIFO_ACCEL_ENABLE);
             s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
@@ -456,8 +454,7 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_config_running_mode(u8 v_running_mode_u8) {
             com_rslt += bmi160_set_fifo_wm(BMI160_ENABLE_FIFO_WM);
             s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             //BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
-            com_rslt += bmi160_set_intr_fifo_wm(BMI160_INTR1_MAP_FIFO_WM,
-            BMI160_ENABLE);
+            com_rslt += bmi160_set_intr_fifo_wm(BMI160_INTR1_MAP_FIFO_WM, BMI160_ENABLE);
             s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* Enable the FIFO water mark interrupt1*/
             /* Enable FIFO water mark interrupts in INT_EN[1] */

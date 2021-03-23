@@ -1,0 +1,67 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --board "/ti/boards/CC1352R1_LAUNCHXL" --product "simplelink_cc13x2_26x2_sdk@3.30.00.03" --product "sail@1.50.00.00"
+ * @versions {"data":"2021010520","timestamp":"2021010520","tool":"1.7.0+1746","templates":null}
+ */
+const BOOSTXL_BASSENSORS = scripting.addHardware("/ti/boards/boosterpacks/BOOSTXL-BASSENSORS");
+const BOOSTXL_SENSORS = scripting.addHardware("/ti/boards/boosterpacks/BOOSTXL-SENSORS");
+
+/**
+ * Import the modules used in this configuration.
+ */
+const Display  = scripting.addModule("/ti/display/Display");
+const Display1 = Display.addInstance();
+const GPIO     = scripting.addModule("/ti/drivers/GPIO");
+const GPIO1    = GPIO.addInstance();
+const GPIO2    = GPIO.addInstance();
+const GPIO3    = GPIO.addInstance();
+const I2C      = scripting.addModule("/ti/drivers/I2C");
+const I2C1     = I2C.addInstance();
+const RTOS     = scripting.addModule("/ti/drivers/RTOS");
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+Display1.$name                    = "CONFIG_Display_0";
+Display1.$hardware                = system.deviceData.board.components.XDS110UART;
+Display1.uart.$name               = "CONFIG_UART_0";
+Display1.uart.txPinInstance.$name = "CONFIG_PIN_0";
+Display1.uart.rxPinInstance.$name = "CONFIG_PIN_1";
+
+GPIO1.$hardware         = system.deviceData.board.components.LED_RED;
+GPIO1.$name             = "CONFIG_LED_0_GPIO";
+GPIO1.pinInstance.$name = "CONFIG_PIN_4";
+
+GPIO2.$name             = "CONFIG_GPIO_OPT3001_INT";
+GPIO2.$hardware         = BOOSTXL_BASSENSORS.components.OPT3001.subComponents.INTERRUPT;
+GPIO2.pull              = "Pull Up";
+GPIO2.interruptTrigger  = "Falling Edge";
+GPIO2.pinInstance.$name = "CONFIG_PIN_5";
+
+GPIO3.$name             = "CONFIG_GPIO_OPT3001_PWR";
+GPIO3.$hardware         = BOOSTXL_BASSENSORS.components.OPT3001.subComponents.POWER;
+GPIO3.pinInstance.$name = "CONFIG_PIN_6";
+
+I2C1.$name                = "CONFIG_I2C_OPT";
+I2C1.$hardware            = BOOSTXL_BASSENSORS.components.BOOSTXL_BASSENSORS_I2C;
+I2C1.sdaPinInstance.$name = "CONFIG_PIN_2";
+I2C1.clkPinInstance.$name = "CONFIG_PIN_3";
+
+const CCFG              = scripting.addModule("/ti/devices/CCFG", {}, false);
+CCFG.ccfgTemplate.$name = "ti_devices_CCFGTemplate0";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+Display1.uart.uart.$suggestSolution       = "UART1";
+Display1.uart.uart.txPin.$suggestSolution = "boosterpack.4";
+Display1.uart.uart.rxPin.$suggestSolution = "boosterpack.3";
+GPIO1.gpioPin.$suggestSolution            = "boosterpack.39";
+GPIO2.gpioPin.$suggestSolution            = "boosterpack.25";
+GPIO3.gpioPin.$suggestSolution            = "boosterpack.27";
+I2C1.i2c.$suggestSolution                 = "I2C0";
+I2C1.i2c.sdaPin.$suggestSolution          = "boosterpack.10";
+I2C1.i2c.sclPin.$suggestSolution          = "boosterpack.9";
