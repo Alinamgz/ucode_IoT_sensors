@@ -44,14 +44,14 @@ This challenge is made to get aqcuanted with Sensors BoosterPack, learn how to w
 
  ## &ensp; &ensp;  <b> How to run this project? </b>
  - git clone
- - open project with CCS
- - select `empty_CC1352R1_LAUNCHXL_tirtos_ccs` in your project explorer
+ - open project with CCS (NB! One folder per time i.e t00 only or t04 only)
+ - select `[project_name]` in your project explorer
  - press `hammer` icon to build this project
  - there are various ways to flash the board with built project:
-    - select `empty_CC1352R1_LAUNCHXL_tirtos_ccs` in your project explorer and ...
+    - select `[project_name]` in your project explorer and ...
    - ... press `curly brackets in a folder` icon
    </br>OR
-   - ... press Run -> Load -> [project_name]
+   - ... press Run -> Load -> `[project_name]`
 ![screenshot](https://user-images.githubusercontent.com/54025456/109845882-43b68980-7c56-11eb-97dd-72f7ce694c9f.png)
 
    #### OR
