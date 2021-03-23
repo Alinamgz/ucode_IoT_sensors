@@ -39,8 +39,6 @@ This challenge is made to get aqcuanted with Sensors BoosterPack, learn how to w
  #### &ensp;&ensp;&ensp;&ensp; <b> Devices</b>
  - [Board LAUNCHXL-CC1352R1](https://www.ti.com/tool/LAUNCHXL-CC1352R1#description)
  - [Board BOOSTXL-SENSORS](https://www.ti.com/tool/BOOSTXL-SENSORS)
-<br/>
-
 ---
 ---
 
