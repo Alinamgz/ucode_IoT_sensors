@@ -33,14 +33,13 @@
 /*
  *    ======== i2cbmi160.c ========
  */
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 /* Driver Header files */
+#include <ti/display/Display.h>
 #include <ti/drivers/GPIO.h>
 #include <ti/drivers/I2C.h>
-
-#include <ti/display/Display.h>
 
 /* Module Header */
 #include <ti/sail/bmi160/bmi160.h>
@@ -51,8 +50,8 @@
 /* Driver configuration */
 #include "ti_drivers_config.h"
 
-I2C_Handle      i2c;
-I2C_Params      i2cParams;
+I2C_Handle i2c;
+I2C_Params i2cParams;
 
 Display_Handle display;
 
@@ -69,13 +68,16 @@ void *mainThread(void *arg0) {
     if (display == NULL) {
         while (1);
     }
-    Display_print0(display, 0, 0, "Starting the i2cbmi160 sensor example...\n\n");
+
+    Display_print0(display, 0, 0,
+                   "Starting the i2cbmi160 sensor example... \n\n");
 
     I2C_Params_init(&i2cParams);
     i2cParams.bitRate = I2C_400kHz;
     i2cParams.transferMode = I2C_MODE_BLOCKING;
     i2cParams.transferCallbackFxn = NULL;
     i2c = I2C_open(CONFIG_I2C_BMI, &i2cParams);
+
     if (i2c == NULL) {
         Display_print0(display, 0, 0, "Error Initializing I2C\n");
     }

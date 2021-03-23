@@ -48,18 +48,17 @@
 extern void *mainThread(void *arg0);
 
 /* Stack size in bytes */
-#define THREADSTACKSIZE    1024
+#define THREADSTACKSIZE 1024
 
 /*
  *  ======== main ========
  */
-int main(void)
-{
-    pthread_t           thread;
-    pthread_attr_t      pAttrs;
-    struct sched_param  priParam;
-    int                 retc;
-    int                 detachState;
+int main(void) {
+    pthread_t thread;
+    pthread_attr_t pAttrs;
+    struct sched_param priParam;
+    int retc;
+    int detachState;
 
     /* Call driver init functions */
     Board_initGeneral();
@@ -89,9 +88,9 @@ int main(void)
         while (1);
     }
 
-    /* destroy pthread attribute */    
+    /* destroy pthread attribute */
     pthread_attr_destroy(&pAttrs);
-    
+
     BIOS_start();
 
     return (0);

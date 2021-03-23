@@ -170,7 +170,7 @@ static BMI160_RETURN_FUNCTION_TYPE I2C_routine(void) {
  *--------------------------------------------------------------------------*/
 	s_bmi160.bus_write = BMI160_I2C_bus_write;
 	s_bmi160.bus_read = BMI160_I2C_bus_read;
-	s_bmi160.burst_read = BMI160_I2C_burst_read;	
+	s_bmi160.burst_read = BMI160_I2C_burst_read;
 	s_bmi160.delay_msec = BMI160_delay_msek;
 	s_bmi160.dev_addr = BMI160_I2C_ADDR2;
 
@@ -272,16 +272,16 @@ void* bmiInterruptHandlerTask(void *arg0) {
  */
 BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(I2C_Handle i2cHndl) {
 	pthread_attr_t       pAttrs;
-	struct sched_param   priParam;    
+	struct sched_param   priParam;
 	int retc;
-	
+
 	BMI160_RETURN_FUNCTION_TYPE com_rslt = BMI160_INIT_VALUE;
-	
+
 	i2cHandle = i2cHndl;
 	/*	Based on the user need configure I2C or SPI interface.
 	*	It is sample code to explain how to use the bmi160 API*/
 	com_rslt = I2C_routine();
-	
+
 	/* The semaphore is used by the bmi160 interrupt handler task
 	* the semaphore is normally posted by bmi160 interrupt(watermark)
 	* The interrupt handler task waits on this semaphore.
@@ -289,7 +289,7 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(I2C_Handle i2cHndl) {
 	if(0 != sem_init(&bmi160Sem,0,0)) {
 		/* sem_init() failed */
 		Display_print0(display, 0, 0, "bmi160sem Semaphore creation failed");
-		while (1);        
+		while (1);
 	}
 	/* The semaphore is used by the display task
 	* display task pushes the data out to console/gui composer
@@ -297,7 +297,7 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(I2C_Handle i2cHndl) {
 	if(0 != sem_init(&displaySem,0,0)) {
 		/* sem_init() failed */
 		Display_print0(display, 0, 0, "displaySem Semaphore creation failed");
-		while (1);        
+		while (1);
 	}
 
 	pthread_attr_init(&pAttrs);
@@ -312,7 +312,7 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(I2C_Handle i2cHndl) {
 		Display_print0(display, 0, 0, "BMI interrupt handler Task creation failed");
 		while (1);
 	}
-	
+
 	pthread_attr_init(&pAttrs);
 	/* Set priority and stack size attributes */
 	pthread_attr_setstacksize(&pAttrs, DISPLAYTASKSTACKSIZE);
@@ -324,19 +324,19 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_initialize_sensor(I2C_Handle i2cHndl) {
 	}
 
 	com_rslt += bmi160_init(&s_bmi160);
-	
+
 	/*reset the bmi160  interrupt engine, FIFO*/
 	bmi160_set_command_register(0xB0);
 	bmi160_set_command_register(0xB1);
-	
+
 	/**** standard 9Dof with FIFO output****/
 	com_rslt += bmi160_config_running_mode(STANDARD_UI_9DOF_FIFO);
 	GPIO_setCallback(CONFIG_GPIO_BMI160_INT1, &bmi160Callback);
 	GPIO_clearInt(CONFIG_GPIO_BMI160_INT1);
 	GPIO_enableInt(CONFIG_GPIO_BMI160_INT1);
-	
+
 	pthread_attr_destroy(&pAttrs);
-	
+
 	return com_rslt;
 }
 
@@ -670,8 +670,7 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_config_running_mode(u8 v_running_mode_u8) {
             com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_NORMAL_MODE);
             s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* set gyro data rate as 200Hz*/
-            com_rslt += bmi160_set_gyro_output_data_rate(
-                BMI160_GYRO_OUTPUT_DATA_RATE_200HZ);
+            com_rslt += bmi160_set_gyro_output_data_rate(BMI160_GYRO_OUTPUT_DATA_RATE_200HZ);
             s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* set accel data rate as 200Hz*/
             com_rslt += bmi160_set_accel_output_data_rate(BMI160_ACCEL_OUTPUT_DATA_RATE_200HZ, BMI160_ACCEL_OSR4_AVG1);
@@ -682,7 +681,7 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_config_running_mode(u8 v_running_mode_u8) {
             com_rslt += bmi160_read_accel_xyz(&accelxyz);
             /* read mag data*/
             com_rslt += bmi160_bmm150_mag_compensate_xyz(&magxyz);
-            break;
+                break;
         case APPLICATION_REMOTE_CONTROL:
             /*Set the accel mode as Normal write in the register 0x7E*/
             com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
@@ -699,49 +698,35 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_config_running_mode(u8 v_running_mode_u8) {
             com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_OSR4_MODE);
             s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* set gyro data rate as 200Hz*/
-            com_rslt += bmi160_set_gyro_output_data_rate(
-                BMI160_GYRO_OUTPUT_DATA_RATE_200HZ);
-            s_bmi160.delay_msec(
-            BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
+            com_rslt += bmi160_set_gyro_output_data_rate(BMI160_GYRO_OUTPUT_DATA_RATE_200HZ);
+            s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* set accel data rate as 200Hz*/
-            com_rslt += bmi160_set_accel_output_data_rate(
-                BMI160_ACCEL_OUTPUT_DATA_RATE_200HZ,
-                BMI160_ACCEL_OSR4_AVG1);
-            s_bmi160.delay_msec(
-            BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
+            com_rslt += bmi160_set_accel_output_data_rate(BMI160_ACCEL_OUTPUT_DATA_RATE_200HZ, BMI160_ACCEL_OSR4_AVG1);
+            s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* read gyro data */
             com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
             /* read accel data*/
             com_rslt += bmi160_read_accel_xyz(&accelxyz);
-        break;
+            break;
         case APPLICATION_INDOOR_NAVIGATION:
             /*Set the accel mode as Normal write in the register 0x7E*/
             com_rslt = bmi160_set_command_register(ACCEL_MODE_NORMAL);
-            s_bmi160.delay_msec(
-                BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
+            s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /*Set the gyro mode as Normal write in the register 0x7E*/
             com_rslt += bmi160_set_command_register(GYRO_MODE_NORMAL);
-            s_bmi160.delay_msec(
-                BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
+            s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* Set the accel bandwidth as OSRS4 */
             com_rslt += bmi160_set_accel_bw(BMI160_ACCEL_OSR4_AVG1);
-            s_bmi160.delay_msec(
-                BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
+            s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* Set the gryo bandwidth as OSR4 */
             com_rslt += bmi160_set_gyro_bw(BMI160_GYRO_OSR4_MODE);
-            s_bmi160.delay_msec(
-                BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
+            s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* set gyro data rate as 200Hz*/
-            com_rslt += bmi160_set_gyro_output_data_rate(
-                BMI160_GYRO_OUTPUT_DATA_RATE_400HZ);
-            s_bmi160.delay_msec(
-                BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
+            com_rslt += bmi160_set_gyro_output_data_rate(BMI160_GYRO_OUTPUT_DATA_RATE_400HZ);
+            s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* set accel data rate as 200Hz*/
-            com_rslt += bmi160_set_accel_output_data_rate(
-                BMI160_ACCEL_OUTPUT_DATA_RATE_400HZ,
-                BMI160_ACCEL_OSR4_AVG1);
-            s_bmi160.delay_msec(
-                BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
+            com_rslt += bmi160_set_accel_output_data_rate(BMI160_ACCEL_OUTPUT_DATA_RATE_400HZ, BMI160_ACCEL_OSR4_AVG1);
+            s_bmi160.delay_msec(BMI160_GEN_READ_WRITE_DELAY);/* bmi160_delay_ms in ms*/
             /* read gyro data*/
             com_rslt += bmi160_read_gyro_xyz(&gyroxyz);
             /* read accel data */
@@ -762,31 +747,26 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_config_running_mode(u8 v_running_mode_u8) {
  *
  *
  */
-BMI160_RETURN_FUNCTION_TYPE bmi160_interrupt_configuration(void)
-{
+BMI160_RETURN_FUNCTION_TYPE bmi160_interrupt_configuration(void) {
 	/* This variable used for provide the communication
 	results*/
 	BMI160_RETURN_FUNCTION_TYPE com_rslt = ERROR;
 
 	/* Configure the in/out control of interrupt1*/
-	com_rslt = bmi160_set_output_enable(BMI160_INTR1_OUTPUT_TYPE,
-	BMI160_ENABLE);
+	com_rslt = bmi160_set_output_enable(BMI160_INTR1_OUTPUT_TYPE, BMI160_ENABLE);
 	s_bmi160.delay_msec(BMI160_SEC_INTERFACE_GEN_READ_WRITE_DELAY);
 	/* Configure the in/out control of interrupt2*/
-	com_rslt += bmi160_set_output_enable(BMI160_INTR2_OUTPUT_TYPE,
-	BMI160_ENABLE);
+	com_rslt += bmi160_set_output_enable(BMI160_INTR2_OUTPUT_TYPE, BMI160_ENABLE);
 	s_bmi160.delay_msec(BMI160_SEC_INTERFACE_GEN_READ_WRITE_DELAY);
 	/* Configure the interrupt1 active high
 	0x00 -	Active low
 	0x01 -	Active high*/
-	com_rslt += bmi160_set_intr_level(BMI160_INTR1_LEVEL,
-	BMI160_LEVEL_HIGH);
+	com_rslt += bmi160_set_intr_level(BMI160_INTR1_LEVEL, BMI160_LEVEL_HIGH);
 	s_bmi160.delay_msec(BMI160_SEC_INTERFACE_GEN_READ_WRITE_DELAY);
 	/* Configure the interrupt2 active high
 	0x00 -	Active low
 	0x01 -	Active high*/
-	com_rslt += bmi160_set_intr_level(BMI160_INTR2_LEVEL,
-	BMI160_LEVEL_HIGH);
+	com_rslt += bmi160_set_intr_level(BMI160_INTR2_LEVEL, BMI160_LEVEL_HIGH);
 	s_bmi160.delay_msec(BMI160_SEC_INTERFACE_GEN_READ_WRITE_DELAY);
 	return com_rslt;
 }
@@ -800,8 +780,7 @@ BMI160_RETURN_FUNCTION_TYPE bmi160_interrupt_configuration(void)
  *            which is hold in an array
  *	\param cnt : The no of byte of data to be read
  */
-s8 BMI160_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
-{
+s8 BMI160_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt) {
 	s32 ierror = BMI160_INIT_VALUE;
 	I2C_Transaction i2cTransaction;
 	/* Please take the below function as your reference
@@ -819,12 +798,11 @@ s8 BMI160_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	i2cTransaction.readBuf = reg_data;
 	i2cTransaction.readCount = cnt;
 	i2cTransaction.slaveAddress = dev_addr;
-	
-	if (!I2C_transfer(i2cHandle,&i2cTransaction))
-	{
+
+	if (!I2C_transfer(i2cHandle, &i2cTransaction)) {
 		ierror = -1;
 	}
-	
+
 	return (s8)ierror;
 }
 
@@ -837,8 +815,7 @@ s8 BMI160_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 *            which is hold in an array
 *	\param cnt : The no of byte of data to be read
 */
-s8 BMI160_I2C_burst_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u32 cnt)
-{
+s8 BMI160_I2C_burst_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u32 cnt) {
 	s32 ierror = BMI160_INIT_VALUE;
 	I2C_Transaction i2cTransaction;
 	/* Please take the below function as your reference
@@ -856,12 +833,11 @@ s8 BMI160_I2C_burst_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u32 cnt)
 	i2cTransaction.readBuf = reg_data;
 	i2cTransaction.readCount = cnt;
 	i2cTransaction.slaveAddress = dev_addr;
-	
-	if (!I2C_transfer(i2cHandle,&i2cTransaction))
-	{
+
+	if (!I2C_transfer(i2cHandle, &i2cTransaction)) {
 		ierror = -1;
 	}
-	
+
 	return (s8)ierror;
 }
 
@@ -874,30 +850,29 @@ s8 BMI160_I2C_burst_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u32 cnt)
  *		will be used for write the value into the register
  *	\param cnt : The no of byte of data to be write
  */
-s8 BMI160_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
-{
+s8 BMI160_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt) {
 	s32 ierror = BMI160_INIT_VALUE;
 	u8 array[I2C_BUFFER_LEN];
 	u8 stringpos = BMI160_INIT_VALUE;
 	I2C_Transaction i2cTransaction;
-	
+
 	array[BMI160_INIT_VALUE] = reg_addr;
+
 	for (stringpos = BMI160_INIT_VALUE; stringpos < cnt; stringpos++)
-		array[stringpos + BMI160_GEN_READ_WRITE_DATA_LENGTH] = *(reg_data +
-				stringpos);
-	
+		array[stringpos + BMI160_GEN_READ_WRITE_DATA_LENGTH] = *(reg_data + stringpos);
+
 	i2cTransaction.writeBuf = array;
 	i2cTransaction.writeCount = cnt + 1;
 	i2cTransaction.readCount = 0;
 	i2cTransaction.slaveAddress = dev_addr;
-	
+
 	/* If transaction success */
 	if (!I2C_transfer(i2cHandle, &i2cTransaction)) {
 		ierror = -1;
 	}
-	
+
 	return (s8)ierror;
-	
+
 	/*
 	* Please take the below function as your reference for
 	* write the data using I2C communication
@@ -919,8 +894,7 @@ s8 BMI160_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 /*	Brief : The delay routine
  *	\param : delay in ms
 */
-static void BMI160_delay_msek(u32 msek)
-{
+static void BMI160_delay_msek(u32 msek) {
 	/*Here you can write your own delay routine*/
 	usleep(msek * 1000);
 }
